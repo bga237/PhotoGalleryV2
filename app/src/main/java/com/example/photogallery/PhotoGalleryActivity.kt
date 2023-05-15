@@ -1,5 +1,6 @@
 package com.example.photogallery
 
+import android.content.ContentValues.TAG
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -7,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.GridLayout
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
@@ -30,6 +32,7 @@ class PhotoGalleryFragment : Fragment()  {
         "Cannot access binding because it is null. Is the view visible?"
     }
 
+    private val photoGalleryViewModel: PhotoGalleryViewModel by viewModels()
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -44,12 +47,14 @@ class PhotoGalleryFragment : Fragment()  {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val photoGalleryViewModel = ViewModelProvider(this).get(PhotoGalleryViewModel::class.java)
+        //val photoGalleryViewModel = ViewModelProvider(this).get(PhotoGalleryViewModel::class.java)
 
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 photoGalleryViewModel.galleryItems.collect { items ->
+
                     binding.photoGrid.adapter = PhotoListAdapter(items)
+                    Log.d(TAG, "Items = $items")
                 }
             }
         }
